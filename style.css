@@ -1,0 +1,79 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500;600;800&family=VT323&display=swap");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Poppins";
+  background: #dce0e8;
+  background-image: url(./background-image/pexels-alesiakozik-6532412.jpg);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.game-container {
+  max-width: 500px;
+  height: 700px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.game {
+  backdrop-filter: blur(25px);
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
+  height: 400px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  border-radius: 30px;
+  /* border: 4px solid black; */
+}
+
+.grid-cell {
+  border: 1px solid #8888889f;
+  color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 5rem;
+  font-weight: 900;
+}
+
+.grid-cell:first-child,
+.grid-cell:nth-child(4),
+.grid-cell:nth-child(7) {
+  border-left: 0;
+}
+.grid-cell:nth-child(3),
+.grid-cell:nth-child(6),
+.grid-cell:nth-child(9) {
+  border-right: 0;
+}
+.grid-cell:nth-child(1),
+.grid-cell:nth-child(2),
+.grid-cell:nth-child(3) {
+  border-top: 0;
+}
+.grid-cell:nth-child(7),
+.grid-cell:nth-child(8),
+.grid-cell:nth-child(9) {
+  border-bottom: 0;
+}
+
+.color-o {
+  color: #ffa600d5;
+}
+.color-x {
+  color: #00a4e6;
+}
