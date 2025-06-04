@@ -56,7 +56,7 @@ body {
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   border-radius: 30px;
-  /* border: 4px solid black; */
+  border: 4px solid black;
 }
 
 .grid-cell {
