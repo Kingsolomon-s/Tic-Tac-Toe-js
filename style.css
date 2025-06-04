@@ -25,6 +25,25 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 10px;
+}
+.score-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+.score {
+  display: flex;
+  padding: 2px 15px;
+  background-color: #fff;
+  border-radius: 15px;
+  font-weight: 600;
+  gap: 5px;
+}
+.player1,
+.player2 {
+  font-size: 1.1rem;
+  color: #222;
 }
 .game {
   backdrop-filter: blur(25px);
@@ -76,4 +95,14 @@ body {
 }
 .color-x {
   color: #00a4e6;
+}
+.status-para {
+  backdrop-filter: blur(25px);
+  display: flex;
+  justify-content: center;
+  font-size: 1.5rem;
+  align-self: center;
+  color: #960202;
+  width: 400px;
+  border-radius: 6px;
 }
