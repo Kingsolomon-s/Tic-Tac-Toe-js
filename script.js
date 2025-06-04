@@ -78,6 +78,63 @@ const gameBoard = (function () {
   return { getBoard, setMark, resetBoard, checkWinner, Player: createPlayer };
 })();
 
+const score = (function () {
+  let player1Score = 0;
+  let player2Score = 0;
+  let roundPlayed = 0;
+  const maxRound = 5;
+
+  const player1Para = document.querySelector(".player1");
+  const player2Para = document.querySelector(".player2");
+
+  const player1ScoreDiv = document.querySelector(".player-1-score");
+  const player2ScoreDiv = document.querySelector(".player-2-score");
+
+  const updateScore = () => {
+    player1Para.textContent = `Player 1 `;
+    player1ScoreDiv.textContent = `${player1Score}  - `;
+    player2ScoreDiv.textContent = ` ${player2Score}`;
+    player2Para.textContent = `Player 2`;
+  };
+
+  const updatePlayer1Score = () => {
+    player1Score++;
+    roundPlayed++;
+    updateScore();
+  };
+
+  const updatePlayer2Score = () => {
+    player2Score++;
+    roundPlayed++;
+    updateScore();
+  };
+
+  const updateDraw = () => {
+    // roundPlayed++;
+    updateScore();
+  };
+
+  const getRound = () => roundPlayed;
+
+  const isGameOver = () => roundPlayed >= maxRound;
+
+  const reset = () => {
+    player1Score = 0;
+    player2Score = 0;
+    roundPlayed = 0;
+    updateScore();
+  };
+
+  return {
+    updatePlayer1Score,
+    updatePlayer2Score,
+    updateDraw,
+    getRound,
+    isGameOver,
+    reset,
+  };
+})();
+
 const gameController = (function () {
   const player1 = gameBoard.Player("Player 1", "X");
   const player2 = gameBoard.Player("Player 2", "O");
@@ -86,32 +143,49 @@ const gameController = (function () {
   let gameActive = true;
 
   const makeMove = (row, col) => {
-    if (!gameActive) return `Game Over`;
+    if (!gameActive) return;
     const markSucess = gameBoard.setMark(row, col, currentPlayer.marker);
     if (!markSucess) return `Invalid Choice`;
+
+    if (score.isGameOver()) {
+      gameActive = false;
+      return `Game Over! 5 rounds played.`;
+    }
 
     return announceWinner();
   };
 
   const announceWinner = () => {
     const winner = gameBoard.checkWinner();
-
-    if (winner) {
-      gameActive = false;
-    }
-
     if (winner === currentPlayer.marker) {
-      return `${currentPlayer.name} wins!`;
+      gameActive = false;
+      if (currentPlayer.marker === "X") {
+        score.updatePlayer1Score();
+      } else {
+        score.updatePlayer2Score();
+      }
+      scheduleReset();
+      return `${currentPlayer.name}  wins!`;
     } else if (winner === "draw") {
-      return `It's a draw`;
+      gameActive = false;
+      score.updateDraw();
+      scheduleReset();
+      return `Draw`;
     } else {
       return switchTurns();
     }
   };
 
+  const scheduleReset = () => {
+    setTimeout(() => {
+      const resetMessage = resetGame();
+      displayGame.renderBoard();
+    }, 1500);
+  };
+
   const switchTurns = () => {
     currentPlayer = currentPlayer === player1 ? player2 : player1;
-    return `${currentPlayer.name}'s turn`;
+    return `${currentPlayer.name}'s  turn`;
   };
 
   const resetGame = () => {
@@ -136,6 +210,7 @@ const displayGame = (function () {
   const gameContainer = document.querySelector(".game-container");
   const game = document.querySelector(".game");
   const statusPara = document.createElement("div");
+  statusPara.classList.add("status-para");
   gameContainer.appendChild(statusPara);
 
   const renderBoard = () => {
