@@ -306,4 +306,25 @@ const displayGame = (function () {
   };
 })();
 
+const homePage = (function () {
+  const homeScreen = document.querySelector(".home");
+  const gameContainer = document.querySelector(".game-screen");
+  const play = document.querySelector(".solo");
+
+  const switchScreen = (from, to) => {
+    from.classList.remove("active");
+    to.classList.add("active");
+  };
+
+  const playButton = () => {
+    play.addEventListener("click", () => {
+      switchScreen(homeScreen, gameContainer);
+    });
+  };
+  return {
+    playButton,
+  };
+})();
+
+homePage.playButton();
 displayGame.init();
