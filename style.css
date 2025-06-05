@@ -233,8 +233,73 @@ div.player1 {
   z-index: 1;
 }
 
+.mode {
+  width: 100%;
+  max-width: 350px;
+  margin: 90px auto 0;
+  padding: 15px;
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: #011733;
+  font-family: "Poppins", sans-serif;
+}
+
+.mode fieldset {
+  border: 2px solid #011733;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.mode legend {
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 0 10px;
+  color: #011733;
+}
+
+.mode div {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mode input[type="radio"] {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #011733;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+.mode input[type="radio"]:checked::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  background-color: #011733;
+  border-radius: 50%;
+}
+
+.mode label {
+  font-size: 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
 @media screen and (max-width: 500px) {
   .solo svg {
     right: 70px;
+  }
+  div.player1 {
+    color: #fff;
   }
 }
