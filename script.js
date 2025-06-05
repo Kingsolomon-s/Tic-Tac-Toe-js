@@ -71,26 +71,37 @@ const gameBoard = (function () {
     return null;
   };
 
+  return { getBoard, setMark, resetBoard, checkWinner };
+})();
+
+const playerFactory = (function () {
   const createPlayer = (name, marker) => {
     return { name, marker };
   };
 
-  return { getBoard, setMark, resetBoard, checkWinner, Player: createPlayer };
+  return {
+    Player: createPlayer,
+  };
 })();
 
 const score = (function () {
   let player1Score = 0;
   let player2Score = 0;
   let roundPlayed = 0;
-  const maxRound = 5;
+  let maxRound = 0;
+  let gameOver = false;
 
-  const player1Para = document.querySelector(".player1");
-  const player2Para = document.querySelector(".player2");
-
-  const player1ScoreDiv = document.querySelector(".player-1-score");
-  const player2ScoreDiv = document.querySelector(".player-2-score");
+  const setMaxRound = (value) => {
+    maxRound = value;
+  };
 
   const updateScore = () => {
+    const player1Para = document.querySelector(".player1");
+    const player2Para = document.querySelector(".player2");
+
+    const player1ScoreDiv = document.querySelector(".player-1-score");
+    const player2ScoreDiv = document.querySelector(".player-2-score");
+
     player1Para.textContent = `Player 1 `;
     player1ScoreDiv.textContent = `${player1Score}  - `;
     player2ScoreDiv.textContent = ` ${player2Score}`;
@@ -99,29 +110,35 @@ const score = (function () {
 
   const updatePlayer1Score = () => {
     player1Score++;
-    roundPlayed++;
     updateScore();
   };
 
   const updatePlayer2Score = () => {
     player2Score++;
-    roundPlayed++;
     updateScore();
   };
 
   const updateDraw = () => {
-    // roundPlayed++;
     updateScore();
+  };
+
+  const incrementRound = () => {
+    roundPlayed++;
   };
 
   const getRound = () => roundPlayed;
 
-  const isGameOver = () => roundPlayed >= maxRound;
+  const isGameOver = () => gameOver || roundPlayed >= maxRound;
+
+  const setGameOver = () => {
+    gameOver = true;
+  };
 
   const reset = () => {
     player1Score = 0;
     player2Score = 0;
     roundPlayed = 0;
+    gameOver = false;
     updateScore();
   };
 
@@ -134,12 +151,15 @@ const score = (function () {
     reset,
     getPlayer1Score: () => player1Score,
     getPlayer2Score: () => player2Score,
+    setMaxRound,
+    incrementRound,
+    setGameOver,
   };
 })();
 
 const gameController = (function () {
-  const player1 = gameBoard.Player("Player 1", "X");
-  const player2 = gameBoard.Player("Player 2", "O");
+  const player1 = playerFactory.Player("Player 1", "X");
+  const player2 = playerFactory.Player("Player 2", "O");
 
   let currentPlayer = player1;
   let gameActive = true;
@@ -148,10 +168,6 @@ const gameController = (function () {
     if (!gameActive) return;
     const markSucess = gameBoard.setMark(row, col, currentPlayer.marker);
     if (!markSucess) return `Invalid Choice`;
-
-    if (score.isGameOver()) {
-      gameActive = false;
-    }
 
     return announceWinner();
   };
@@ -186,9 +202,13 @@ const gameController = (function () {
 
   const scheduleReset = () => {
     setTimeout(() => {
+      score.incrementRound();
+
       if (score.isGameOver()) {
         const player1Score = score.getPlayer1Score();
         const player2Score = score.getPlayer2Score();
+
+        score.setGameOver();
 
         if (player1Score > player2Score) {
           displayGame.updateStatus(
@@ -208,6 +228,7 @@ const gameController = (function () {
       const resetMessage = resetGame();
       displayGame.removeStatusBg();
       displayGame.renderBoard();
+      displayGame.updateStatus();
     }, 1500);
   };
 
@@ -241,7 +262,7 @@ const displayGame = (function () {
   const renderBoard = () => {
     game.innerHTML = "";
     const board = gameBoard.getBoard();
-    console.log(board);
+
     board.forEach((row, rowIndex) => {
       row.forEach((cell, colIndex) => {
         const gridCell = document.createElement("div");
@@ -273,7 +294,7 @@ const displayGame = (function () {
     const resetButton = document.querySelector(".reset");
     resetButton.addEventListener("click", () => {
       gameController.resetGame();
-      updateStatus("");
+      updateStatus();
       removeStatusBg();
       score.reset();
       renderBoard();
@@ -283,7 +304,14 @@ const displayGame = (function () {
   const updateStatus = (
     message = `${gameController.getCurrentPlayer().name}'s turn`
   ) => {
-    statusPara.innerHTML = message;
+    const roundInfo = `Round ${score.getRound() + 1}`;
+
+    if (score.isGameOver()) {
+      statusPara.innerHTML = message;
+    } else {
+      statusPara.innerHTML = `${message} <br> ${roundInfo}`;
+    }
+
     if (message) {
       statusPara.classList.add("status-bg");
     }
@@ -296,6 +324,7 @@ const displayGame = (function () {
   const init = () => {
     renderBoard();
     resetGameButton();
+    updateStatus();
   };
 
   return {
@@ -316,8 +345,20 @@ const homePage = (function () {
     to.classList.add("active");
   };
 
+  const getModeValue = () => {
+    const selectedMode = document.querySelector('input[name="mode"]:checked');
+    if (!selectedMode) {
+      alert("Please select a mode.");
+      return;
+    }
+    const rounds = selectedMode ? Number(selectedMode.value) : 3;
+    console.log(rounds);
+    score.setMaxRound(rounds);
+  };
+
   const playButton = () => {
     play.addEventListener("click", () => {
+      getModeValue();
       switchScreen(homeScreen, gameContainer);
     });
   };
