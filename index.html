@@ -7,18 +7,60 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="game-container">
-      <div class="score-container">
-        <div class="player1"></div>
-        <div class="score">
-          <div class="player-1-score"></div>
-          <div class="player-2-score"></div>
+    <div class="home screen active">
+      <div class="home-screen">
+        <div class="logo-container">
+          <div class="logo">
+            <p>X</p>
+            <p>O</p>
+          </div>
+          <div>Tic-Tac-Toe</div>
         </div>
-        <div class="player2"></div>
+
+        <button class="solo">
+          <svg
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+          >
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              <path
+                d="M8 7C9.65685 7 11 5.65685 11 4C11 2.34315 9.65685 1 8 1C6.34315 1 5 2.34315 5 4C5 5.65685 6.34315 7 8 7Z"
+                fill="#000000"
+              ></path>
+              <path
+                d="M14 12C14 10.3431 12.6569 9 11 9H5C3.34315 9 2 10.3431 2 12V15H14V12Z"
+                fill="#000000"
+              ></path>
+            </g>
+          </svg>
+          Play Solo
+        </button>
       </div>
-      <div class="game"></div>
-      <div class="status-para"></div>
-      <button class="reset">Reset Game</button>
+    </div>
+
+    <div class="game-screen screen">
+      <div class="game-container">
+        <div class="score-container">
+          <div class="player1"></div>
+          <div class="score">
+            <div class="player-1-score"></div>
+            <div class="player-2-score"></div>
+          </div>
+          <div class="player2"></div>
+        </div>
+        <div class="game"></div>
+        <div class="status-para"></div>
+        <button class="reset">Reset Game</button>
+      </div>
     </div>
 
     <script src="./script.js"></script>
