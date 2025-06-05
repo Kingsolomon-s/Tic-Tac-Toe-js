@@ -82,7 +82,7 @@ const score = (function () {
   let player1Score = 0;
   let player2Score = 0;
   let roundPlayed = 0;
-  const maxRound = 5;
+  const maxRound = 2;
 
   const player1Para = document.querySelector(".player1");
   const player2Para = document.querySelector(".player2");
@@ -132,6 +132,8 @@ const score = (function () {
     getRound,
     isGameOver,
     reset,
+    getPlayer1Score: () => player1Score,
+    getPlayer2Score: () => player2Score,
   };
 })();
 
@@ -149,7 +151,6 @@ const gameController = (function () {
 
     if (score.isGameOver()) {
       gameActive = false;
-      return `Game Over! 5 rounds played.`;
     }
 
     return announceWinner();
@@ -164,11 +165,13 @@ const gameController = (function () {
       } else {
         score.updatePlayer2Score();
       }
+      addScoreBg();
       scheduleReset();
       return `${currentPlayer.name}  wins!`;
     } else if (winner === "draw") {
       gameActive = false;
       score.updateDraw();
+      addScoreBg();
       scheduleReset();
       return `Draw`;
     } else {
@@ -176,9 +179,34 @@ const gameController = (function () {
     }
   };
 
+  function addScoreBg() {
+    const scoreEl = document.querySelector(".score");
+    scoreEl.classList.add("score-bg");
+  }
+
   const scheduleReset = () => {
     setTimeout(() => {
+      if (score.isGameOver()) {
+        const player1Score = score.getPlayer1Score();
+        const player2Score = score.getPlayer2Score();
+
+        if (player1Score > player2Score) {
+          displayGame.updateStatus(
+            `Wasted(${player2.name}) <br> ${player1.name} wins 🏆`
+          );
+        } else if (player2Score > player1Score) {
+          displayGame.updateStatus(
+            `Wasted(${player1.name}) <br> ${player2.name} wins 🏆`
+          );
+        } else {
+          displayGame.updateStatus("🤝 It's an overall draw!");
+        }
+
+        return;
+      }
+
       const resetMessage = resetGame();
+      displayGame.removeStatusBg();
       displayGame.renderBoard();
     }, 1500);
   };
@@ -207,11 +235,8 @@ const gameController = (function () {
 })();
 
 const displayGame = (function () {
-  const gameContainer = document.querySelector(".game-container");
   const game = document.querySelector(".game");
-  const statusPara = document.createElement("div");
-  statusPara.classList.add("status-para");
-  gameContainer.appendChild(statusPara);
+  const statusPara = document.querySelector(".status-para");
 
   const renderBoard = () => {
     game.innerHTML = "";
@@ -238,19 +263,47 @@ const displayGame = (function () {
   };
 
   const handleCellClick = (row, col) => {
+    if (score.isGameOver()) return;
     const result = gameController.makeMove(row, col);
     updateStatus(result);
     renderBoard();
   };
 
+  const resetGameButton = () => {
+    const resetButton = document.querySelector(".reset");
+    resetButton.addEventListener("click", () => {
+      gameController.resetGame();
+      updateStatus("");
+      removeStatusBg();
+      score.reset();
+      renderBoard();
+    });
+  };
+
   const updateStatus = (
     message = `${gameController.getCurrentPlayer().name}'s turn`
   ) => {
-    statusPara.textContent = message;
+    statusPara.innerHTML = message;
+    if (message) {
+      statusPara.classList.add("status-bg");
+    }
   };
+
+  const removeStatusBg = () => {
+    statusPara.classList.remove("status-bg");
+  };
+
+  const init = () => {
+    renderBoard();
+    resetGameButton();
+  };
+
   return {
     renderBoard,
+    removeStatusBg,
+    updateStatus,
+    init,
   };
 })();
 
-displayGame.renderBoard();
+displayGame.init();
