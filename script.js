@@ -82,7 +82,7 @@ const score = (function () {
   let player1Score = 0;
   let player2Score = 0;
   let roundPlayed = 0;
-  const maxRound = 2;
+  const maxRound = 5;
 
   const player1Para = document.querySelector(".player1");
   const player2Para = document.querySelector(".player2");
